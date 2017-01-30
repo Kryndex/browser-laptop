@@ -129,6 +129,7 @@ module.exports.cleanPerWindowData = (perWindowData, isShutdown) => {
   delete perWindowData.braveryPanelDetail
   // Don't restore drag data and clearBrowsingDataPanel's visibility
   if (perWindowData.ui) {
+    // This is no longer stored, we can remove this line eventually
     delete perWindowData.ui.dragging
     delete perWindowData.ui.isClearBrowsingDataPanelVisible
   }
@@ -204,6 +205,7 @@ module.exports.cleanPerWindowData = (perWindowData, isShutdown) => {
     // don't regenerate new frame keys when opening storage.
     delete frame.parentFrameKey
     // Delete the active shortcut details
+    delete frame.activeShortcut
     delete frame.activeShortcutDetails
 
     if (frame.navbar && frame.navbar.urlbar) {
@@ -276,6 +278,9 @@ module.exports.cleanAppData = (data, isShutdown) => {
     data.autofill.addresses.timestamp = date
     data.autofill.creditCards.guid = []
     data.autofill.creditCards.timestamp = date
+  }
+  if (data.dragData) {
+    delete data.dragData
   }
   const clearSiteSettings = isShutdown && getSetting(settings.SHUTDOWN_CLEAR_SITE_SETTINGS) === true
   if (clearSiteSettings) {

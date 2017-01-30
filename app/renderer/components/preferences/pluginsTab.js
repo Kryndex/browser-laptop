@@ -37,7 +37,6 @@ class PluginsTab extends ImmutableComponent {
   }
 
   render () {
-    const braveWikiLink = 'https://github.com/brave/browser-laptop/wiki'
     return <div>
       <div className='sectionTitle' data-l10n-id='pluginSettings' />
       <SettingsList>
@@ -48,9 +47,9 @@ class PluginsTab extends ImmutableComponent {
             ? <div>
               <span className='fa fa-info-circle flashInfoIcon' />
               <span data-l10n-id='enableFlashSubtext' />&nbsp;
-              <span className='linkText' onClick={aboutActions.newFrame.bind(null, {
-                location: appConfig.flash.installUrl
-              }, true)} title={appConfig.flash.installUrl}>{'Adobe'}</span>.
+              <span className='linkText' onClick={aboutActions.createTabRequested.bind(null, {
+                url: appConfig.flash.installUrl
+              })} title={appConfig.flash.installUrl}>{'Adobe'}</span>.
             </div>
             : <div>
               <span className='fa fa-info-circle flashInfoIcon' />
@@ -60,11 +59,9 @@ class PluginsTab extends ImmutableComponent {
           <div>
             <span className='fa fa-info-circle flashInfoIcon' />
             <span data-l10n-id='flashTroubleshooting' />&nbsp;
-            <span className='linkText'
-              onClick={aboutActions.newFrame.bind(null, {
-                location: `${braveWikiLink}/Flash-Support-Deprecation-Proposal#troubleshooting-flash-issues`
-              }, true)}
-              title={`${braveWikiLink}/Flash-Support-Deprecation-Proposal#troubleshooting-flash-issues`}>{'wiki'}</span>.
+            <span className='linkText' onClick={aboutActions.createTabRequested.bind(null, {
+              url: 'https://github.com/brave/browser-laptop/wiki/Flash-Support-Deprecation-Proposal#troubleshooting-flash-issues'
+            })} title='https://github.com/brave/browser-laptop/wiki/Flash-Support-Deprecation-Proposal#troubleshooting-flash-issues'>{'wiki'}</span>.
           </div>
         </div>
       </SettingsList>
@@ -73,7 +70,7 @@ class PluginsTab extends ImmutableComponent {
           ? <div>
             <div className='sectionTitle' data-l10n-id='widevineSection' />
             <SettingsList>
-              <WidevineInfo newFrameAction={aboutActions.newFrame} />
+              <WidevineInfo createTabRequestedAction={aboutActions.createTabRequested} />
               <SettingCheckbox checked={this.props.braveryDefaults.get('widevine')} dataL10nId='enableWidevine' onChange={this.onToggleWidevine} />
             </SettingsList>
           </div>
