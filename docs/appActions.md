@@ -861,6 +861,18 @@ Notifies the app that a drop operation occurred
 
 
 
+### guestAttached() 
+
+Notifies the app that a guest should be attached
+
+
+
+### guestDetached() 
+
+Notifies the app that a guest should be detached
+
+
+
 
 * * *
 

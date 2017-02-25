@@ -25,7 +25,7 @@ const React = require('react')
 const ReactDOM = require('react-dom')
 const Window = require('./components/window')
 const electron = require('electron')
-const {currentWindowWebContents} = require('../app/renderer/currentWindow')
+const {currentWindowWebContents, currentWindowId} = require('../app/renderer/currentWindow')
 const ipc = electron.ipcRenderer
 const webFrame = electron.webFrame
 const windowStore = require('./stores/windowStore')
@@ -66,7 +66,7 @@ ipc.on(messages.CLEAR_CLOSED_FRAMES, () => {
   windowActions.clearClosedFrames()
 })
 
-window.addEventListener('beforeunload', function () {
+window.addEventListener('beforeunload', function (e) {
   ipc.send(messages.LAST_WINDOW_STATE, windowStore.getState().toJS())
 })
 

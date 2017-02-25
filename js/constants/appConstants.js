@@ -106,7 +106,10 @@ const appConstants = {
   APP_DRAG_STARTED: _,
   APP_DRAG_STOPPED: _,
   APP_DATA_DROPPED: _,
-  APP_DRAGGED_OVER: _
+  APP_DRAGGED_OVER: _,
+  APP_GUEST_ATTACHED: _,
+  APP_GUEST_DETACHED: _,
+  APP_PINNED_TABS_TRANSFERRING: _
 }
 
 module.exports = mapValuesByKeys(appConstants)

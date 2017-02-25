@@ -742,6 +742,28 @@ const doAction = (action) => {
       newFrame(action.frameOpts, action.frameOpts.openInForeground)
       updateTabPageIndex(frameStateUtil.getActiveFrame(windowState))
       break
+    case appConstants.APP_PINNED_TABS_TRANSFERRING:
+      console.log('pinned tabs transferring hit on window id: ', currentWindowId, 'for closing ', action.closingWindowId)
+      const pinnedFrames = windowState.get('frames').filter((frame) => frame.get('pinnedLocation'))
+      pinnedFrames.forEach((frame) => {
+        const webview = document.querySelector(`webview[data-frame-key="${frame.get('key')}"]`)
+        if (action.attaching) {
+          console.log('----app pinned tabs transferring for guest ', frame.get('guestInstanceId') ,'for frame: ', frame.get('key'))
+          windowState = windowState.setIn(frameStatePathForFrame(windowState, frame).concat(['closeWindowWhenAttachedId']), action.closingWindowId)
+          webview.attachGuest(frame.get('guestInstanceId'))
+        } else {
+          console.log('----app pinned tabs detaching for guest ', frame.get('guestInstanceId'), 'for frame: ', frame.get('key'))
+          webview.detachGuest()
+        }
+
+          /*
+        if (action.closingWindowId) {
+          console.log('close window id: ', action.closingWindowId)
+          appActions.closeWindow(action.closingWindowId)
+        }
+          */
+      })
+      break
     default:
       break
   }

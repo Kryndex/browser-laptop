@@ -722,12 +722,13 @@ class Frame extends ImmutableComponent {
       if (this.frame.isEmpty()) {
         return
       }
+      console.log('guest-ready for tabId:', e.tabId || this.props.tabId, 'guest instanceId:', e.guestInstanceId || this.props.guestInstanceId)
       if (this.props.tabId !== e.tabId || this.props.guestInstanceId !== e.guestInstanceId) {
         windowActions.setFrameTabId(this.frame,
           e.tabId || this.props.tabId,
           e.guestInstanceId || this.props.guestInstanceId)
       }
-      // If this tag was transferred we should close the openeing window at this point.
+      // If this tag was transferred we should close the opening window at this point.
       const closeWindowWhenAttachedId = this.frame.get('closeWindowWhenAttachedId')
       if (closeWindowWhenAttachedId) {
         appActions.closeWindow(closeWindowWhenAttachedId)

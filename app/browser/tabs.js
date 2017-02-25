@@ -279,12 +279,12 @@ const api = {
       // For now we only support 1 tab pin per URL
       const alreadyPinnedTab = tabState.queryTab(state, { url, pinned: true })
       if (pinned && alreadyPinnedTab) {
-        console.log('----setActive from pin. state is:', state.get('tabs').toJS())
-        tab.setActive(true)
-      } else {
-        console.log('----tab.setPinned:', pinned)
-        tab.setPinned(pinned)
+        tab.close(tab)
+        return tabState.removeTabByTabId(state, tabId)
       }
+
+      console.log('----tab.setPinned:', tabId, pinned)
+      tab.setPinned(pinned)
     }
     return state
   },
@@ -295,7 +295,7 @@ const api = {
     const tab = api.getWebContents(tabId)
     try {
       if (!tab.isDestroyed()) {
-        tab.close()
+        tab.close(tab)
       }
     } catch (e) {
       // ignore
@@ -364,6 +364,28 @@ const api = {
       }
     } else {
       api.createTab(state, action)
+    }
+    return state
+  },
+
+  attachGuest: (state, action) => {
+    action = makeImmutable(action)
+    const tabId = action.get('tabId')
+    const guestInstanceId = action.get('guestInstanceId')
+    const tab = api.getWebContents(tabId)
+    if (tab && !tab.isDestroyed()) {
+      console.log('attaching guest for guestInstanceId: ', guestInstanceId)
+      tab.attachGuest(guestInstanceId)
+    }
+    return state
+  },
+
+  detachGuest: (state, action) => {
+    action = makeImmutable(action)
+    const tabId = action.get('tabId')
+    const tab = api.getWebContents(tabId)
+    if (tab && !tab.isDestroyed()) {
+      tab.detachGuest()
     }
     return state
   }

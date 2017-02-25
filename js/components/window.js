@@ -14,8 +14,10 @@ const Main = require('./main')
 const cx = require('../lib/classSet')
 const {getPlatformStyles} = require('../../app/common/lib/platformUtil')
 const alreadyPinnedTabs = new Set()
-const {currentWindowId} = require('../../app/renderer/currentWindow')
+const {currentWindowId, isFocused} = require('../../app/renderer/currentWindow')
 const {isPinnedTab} = require('../state/siteUtil')
+
+window.appActions = appActions
 
 class Window extends React.Component {
   constructor (props) {
@@ -55,6 +57,13 @@ class Window extends React.Component {
     appStoreRenderer.addChangeListener(this.onAppStateChange)
   }
   syncPinnedTabs () {
+    // Only sync pinned tabs when a window is focused to avoid race conditions
+    if (!isFocused) {
+      console.log('---- !isFocused so returning')
+      return
+    }
+    console.log('---- isFocused so syncPinnedTabas')
+
     // Shortcut to only do this when the number of pinned tabs in app storage changes
     const pinnedTabSize = this.appState.get('tabs').filter((tab) => tab.get('pinned')).size
     if (pinnedTabSize === this.lastPinnedTabSize) {
@@ -75,7 +84,11 @@ class Window extends React.Component {
     // The actual removal will be done in frame.js when detection of pinned status changes.
     const pinnedTabUrls = pinnedTabs.map((tab) => tab.get('url'))
     const tabsToRemove = Array.from(alreadyPinnedTabs.values())
-      .filter((x) => !pinnedTabUrls.has(x))
+      .filter((x) => {
+        const result = !pinnedTabUrls.includes(x)
+        console.log('checking for has:', x, 'result:', result)
+        return result
+      })
 
     // Preload current app tabs that are pinned into already pinned locations
     pinnedTabs.filter((tab) => !alreadyPinnedTabs.has(tab.get('url')))
@@ -94,9 +107,15 @@ class Window extends React.Component {
         })
       })
 
-    console.log('---removing pins:')
-    tabsToRemove.forEach(console.log.bind(console))
-    console.log('---end')
+    if (tabsToRemove.length > 0)  {
+      console.log('---removing pins:')
+      tabsToRemove.forEach(console.log.bind(console))
+      console.log('---alreadyPinnedTabs:')
+      Array.from(alreadyPinnedTabs.values()).forEach(console.log.bind(console))
+      console.log('---pinnedTabUrls:')
+      pinnedTabUrls.toJS().forEach(console.log.bind(console))
+      console.log('---end')
+    }
     tabsToRemove.forEach(Set.prototype.delete.bind(alreadyPinnedTabs))
     this.lastPinnedTabSize = pinnedTabSize
   }

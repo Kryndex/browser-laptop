@@ -65,6 +65,12 @@ const tabsReducer = (state, action) => {
     case appConstants.APP_LOAD_URL_IN_ACTIVE_TAB_REQUESTED:
       state = tabs.loadURLInActiveTab(state, action)
       break
+    case appConstants.APP_GUEST_ATTACHED:
+      state = tabs.attachGuest(state, action)
+      break
+    case appConstants.APP_GUEST_DETACHED:
+      state = tabs.detachGuest(state, action)
+      break
   }
   return state
 }

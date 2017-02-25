@@ -1039,6 +1039,26 @@ const appActions = {
   },
 
   /*
+   * Dispatches a message when pinned tabs are transferring across windows.
+   * This is only currently used when a window is closed to transfer the owner webcontents over which
+   * must happen before the window is closed or else the guest will be destroyed.
+   *
+   * @param {number} windowId - The windowId of the window which should attach or detach pinned tabs
+   * @param {boolean} attaching - true if things should be attached, false if they should be detached
+   * @param {number} closingWindowId - The windowId that should be closed after the attach is complete
+   */
+  pinnedTabsTransferring: function (windowId, attaching, closingWindowId) {
+    AppDispatcher.dispatch({
+      actionType: appConstants.APP_PINNED_TABS_TRANSFERRING,
+      queryInfo: {
+        windowId
+      },
+      attaching,
+      closingWindowId
+    })
+  },
+
+  /*
    * Notifies the app that a drag operation started from within the app
    * @param {number} windowId - The source windowId the drag is starting from
    * @param {string} dragType - The type of data
@@ -1081,6 +1101,27 @@ const appActions = {
     AppDispatcher.dispatch({
       actionType: appConstants.APP_DRAGGED_OVER,
       draggedOverData
+    })
+  },
+
+  /**
+   * Notifies the app that a guest should be attached
+   */
+  guestAttached: function (tabId, guestInstanceId) {
+    AppDispatcher.dispatch({
+      actionType: appConstants.APP_GUEST_ATTACHED,
+      tabId,
+      guestInstanceId
+    })
+  },
+
+  /**
+   * Notifies the app that a guest should be detached
+   */
+  guestDetached: function (tabId) {
+    AppDispatcher.dispatch({
+      actionType: appConstants.APP_GUEST_DETACHED,
+      tabId
     })
   }
 }
